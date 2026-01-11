@@ -1,5 +1,6 @@
 <html lang="es">
 <head>
+    <meta name="monetag" content="db8f471cb82be6057fc6b2d199208382">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Puntos Rewards Bot</title>
