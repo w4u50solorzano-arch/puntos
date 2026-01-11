@@ -184,10 +184,10 @@
         tg.expand();
         
         const MI_WHATSAPP = "584144952096";
-        const BLOCK_ID = "4280"; // Reemplaza con tu ID real de Adsgram
+        const BLOCK_ID = "20776"; // Reemplaza con tu ID real de Adsgram
         
         let puntos = localStorage.getItem('puntos_user') ? parseInt(localStorage.getItem('puntos_user')) : 0;
-        const AdController = window.Adsgram ? window.Adsgram.init({ UnitID: bot-20776}) : null;
+        const AdController = window.Adsgram ? window.Adsgram.init({ blockId: BLOCK_ID}) : null;
 
         // 2. ACTUALIZAR INTERFAZ
         function actualizarUI() {
