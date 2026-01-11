@@ -1,16 +1,20 @@
+<!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta name="monetag" content="db8f471cb82be6057fc6b2d199208382">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <!-- Verificación de Monetag -->
+    <meta name="monetag" content="db8f471cb82be6057fc6b2d199208382">
     <title>Puntos Rewards Bot</title>
     
-    <!-- SDKs -->
+    <!-- SDK de Telegram y Confetti -->
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
-    <script src="https://sad.adsgram.ai/js/adsgram-ad-sdk.js"></script>
-    <!-- Librería para Confeti -->
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
-    
+
+    <!-- SCRIPT DE MONETAG (REEMPLAZA ESTO) -->
+    <!-- Pega aquí el script que te da Monetag para tu Zone ID -->
+    <script src="https://alwingulla.com/88/pfe/current/tag.min.js?z=XXXXXXX" data-zone="XXXXXXX" async data-cfasync="false"></script>
+
     <style>
         :root {
             --bg: #0b0e14;
@@ -46,14 +50,12 @@
             margin-bottom: 30px;
         }
 
-        /* --- BALANCE CARD --- */
         #balance-card {
             background: linear-gradient(135deg, #0088cc, #004466);
             padding: 30px;
             border-radius: 24px;
             box-shadow: 0 10px 25px rgba(0, 136, 204, 0.3);
             transition: var(--transition);
-            position: relative;
         }
 
         #balance-card.pulse {
@@ -65,7 +67,6 @@
             font-size: 4rem;
             font-weight: 900;
             display: block;
-            line-height: 1;
         }
 
         #balance-card p {
@@ -77,7 +78,6 @@
             opacity: 0.8;
         }
 
-        /* --- BOTÓN DE VIDEO --- */
         .action-section {
             margin-bottom: 35px;
             position: relative;
@@ -96,10 +96,6 @@
             cursor: pointer;
             box-shadow: 0 6px 0 #cccccc;
             transition: all 0.1s;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 12px;
         }
 
         #btn-video:active {
@@ -107,14 +103,6 @@
             box-shadow: 0 2px 0 #cccccc;
         }
 
-        #btn-video:disabled {
-            background-color: #2d3545;
-            color: #707d93;
-            box-shadow: none;
-            transform: translateY(4px);
-        }
-
-        /* Animación +1 */
         .plus-one {
             position: absolute;
             color: var(--success);
@@ -128,17 +116,9 @@
 
         @keyframes floatUp {
             0% { opacity: 0; transform: translate(-50%, 0); }
-            20% { opacity: 1; }
             100% { opacity: 0; transform: translate(-50%, -120px); }
         }
 
-        #status-msg {
-            min-height: 24px;
-            margin-top: 15px;
-            font-size: 1rem;
-        }
-
-        /* --- PREMIOS --- */
         .card {
             background-color: var(--card);
             padding: 18px;
@@ -148,11 +128,7 @@
             align-items: center;
             margin-bottom: 15px;
             border: 1px solid #2d3545;
-            animation: fadeInUp 0.5s ease backwards;
         }
-
-        .info h3 { margin: 0; font-size: 1.1rem; }
-        .costo { margin: 5px 0 0; color: var(--primary); font-weight: bold; }
 
         .btn-canje {
             padding: 12px 20px;
@@ -167,12 +143,6 @@
             background-color: var(--success);
             color: white;
             cursor: pointer;
-            box-shadow: 0 4px 15px rgba(34, 197, 94, 0.3);
-        }
-
-        @keyframes fadeInUp {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
         }
     </style>
 </head>
@@ -188,38 +158,17 @@
 
         <main>
             <section class="action-section" id="video-container">
-                <button id="btn-video" onclick="verVideo()">
-                    <span>📺</span> VER VIDEO (+1)
+                <button id="btn-video" onclick="mostrarAnuncioMonetag()">
+                    <span>📺</span> VER PUBLICIDAD (+1)
                 </button>
                 <p id="status-msg"></p>
             </section>
 
             <section class="premios-section">
                 <h2 style="color: var(--text-dim); font-size: 1.1rem; margin-bottom: 15px;">Canjear Premios</h2>
-                
-                <div class="card" style="animation-delay: 0.1s">
-                    <div class="info">
-                        <h3>Datos Fijos</h3>
-                        <p class="costo">30 Puntos</p>
-                    </div>
-                    <button class="btn-canje" id="btn-30" disabled>Bloqueado</button>
-                </div>
-
-                <div class="card" style="animation-delay: 0.2s">
-                    <div class="info">
-                        <h3>Tripletas</h3>
-                        <p class="costo">60 Puntos</p>
-                    </div>
-                    <button class="btn-canje" id="btn-60" disabled>Bloqueado</button>
-                </div>
-
-                <div class="card" style="animation-delay: 0.3s">
-                    <div class="info">
-                        <h3>Plan Premium</h3>
-                        <p class="costo">100 Puntos</p>
-                    </div>
-                    <button class="btn-canje" id="btn-100" disabled>Bloqueado</button>
-                </div>
+                <div class="card"><div class="info"><h3>Datos Fijos</h3><p style="color:var(--primary)">30 Puntos</p></div><button class="btn-canje" id="btn-30" disabled>Bloqueado</button></div>
+                <div class="card"><div class="info"><h3>Tripletas</h3><p style="color:var(--primary)">60 Puntos</p></div><button class="btn-canje" id="btn-60" disabled>Bloqueado</button></div>
+                <div class="card"><div class="info"><h3>Plan Premium</h3><p style="color:var(--primary)">100 Puntos</p></div><button class="btn-canje" id="btn-100" disabled>Bloqueado</button></div>
             </section>
         </main>
     </div>
@@ -229,13 +178,52 @@
         tg.expand();
         
         const MI_WHATSAPP = "584144952096";
-        // AQUÍ TU UNIT ID ACTUALIZADO
-        const BLOCK_ID = "7338"; 
-        
         let puntosActuales = localStorage.getItem('puntos_user') ? parseInt(localStorage.getItem('puntos_user')) : 0;
-        const AdController = window.Adsgram ? window.Adsgram.init({ blockId: BLOCK_ID }) : null;
 
-        // Función Contador Animado
+        // --- FUNCIÓN PARA MONETAG ---
+        function mostrarAnuncioMonetag() {
+            const msg = document.getElementById('status-msg');
+            msg.innerText = "Abriendo publicidad...";
+
+            // 1. Llamamos al anuncio de Monetag
+            // Si usas un Rewarded Interstitial de Monetag, el script suele activarse solo o mediante una función.
+            // Si usas un "Direct Link", usa la línea de abajo:
+            // window.open("TU_DIRECT_LINK_AQUI", "_blank");
+
+            // Simulación de éxito de Monetag (Ya que Monetag no siempre devuelve si se vio el video)
+            // Agregamos el punto inmediatamente o tras un pequeño delay
+            setTimeout(() => {
+                sumarPunto();
+                msg.innerText = "¡Punto sumado!";
+                setTimeout(() => msg.innerText = "", 2000);
+            }, 2000); 
+        }
+
+        function sumarPunto() {
+            puntosActuales += 1;
+            localStorage.setItem('puntos_user', puntosActuales);
+            
+            // Animaciones
+            celebrarEfecto();
+            actualizarUI(true);
+        }
+
+        function celebrarEfecto() {
+            if (tg.HapticFeedback) tg.HapticFeedback.notificationOccurred('success');
+            confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
+            
+            const container = document.getElementById('video-container');
+            const plusOne = document.createElement('div');
+            plusOne.className = 'plus-one';
+            plusOne.innerText = '+1';
+            container.appendChild(plusOne);
+            setTimeout(() => plusOne.remove(), 1000);
+
+            const card = document.getElementById('balance-card');
+            card.classList.add('pulse');
+            setTimeout(() => card.classList.remove('pulse'), 500);
+        }
+
         function animarContador(objetivo) {
             const el = document.getElementById('puntos-balance');
             const inicio = parseInt(el.innerText);
@@ -250,29 +238,6 @@
                 if (progreso < 1) window.requestAnimationFrame(paso);
             }
             window.requestAnimationFrame(paso);
-        }
-
-        // Efectos de celebración
-        function celebrar() {
-            if (tg.HapticFeedback) tg.HapticFeedback.notificationOccurred('success');
-            
-            confetti({
-                particleCount: 100,
-                spread: 70,
-                origin: { y: 0.6 },
-                colors: ['#0088cc', '#22c55e']
-            });
-
-            const container = document.getElementById('video-container');
-            const plusOne = document.createElement('div');
-            plusOne.className = 'plus-one';
-            plusOne.innerText = '+1';
-            container.appendChild(plusOne);
-            setTimeout(() => plusOne.remove(), 1000);
-
-            const card = document.getElementById('balance-card');
-            card.classList.add('pulse');
-            setTimeout(() => card.classList.remove('pulse'), 500);
         }
 
         function actualizarUI(animar = false) {
@@ -292,13 +257,12 @@
                     b.innerText = "Canjear";
                     b.classList.add('activo');
                     b.onclick = () => {
-                        tg.showConfirm(`¿Canjear ${p.coste} pts por ${p.nom}?`, (confirm) => {
+                        tg.showConfirm(`¿Canjear ${p.coste} pts?`, (confirm) => {
                             if(confirm) {
                                 puntosActuales -= p.coste;
                                 localStorage.setItem('puntos_user', puntosActuales);
                                 actualizarUI(true);
-                                const user = tg.initDataUnsafe?.user?.first_name || "Usuario";
-                                tg.openLink(`https://wa.me/${MI_WHATSAPP}?text=Canje: ${p.nom} - Usuario: ${user}`);
+                                tg.openLink(`https://wa.me/${MI_WHATSAPP}?text=Canje: ${p.nom}`);
                             }
                         });
                     };
@@ -308,31 +272,6 @@
                     b.classList.remove('activo');
                 }
             });
-        }
-
-        async function verVideo() {
-            const btn = document.getElementById('btn-video');
-            const msg = document.getElementById('status-msg');
-            btn.disabled = true;
-            msg.innerText = "Cargando anuncio...";
-
-            try {
-                const result = await AdController.show();
-                if (result.done) {
-                    puntosActuales += 1;
-                    localStorage.setItem('puntos_user', puntosActuales);
-                    celebrar();
-                    actualizarUI(true);
-                    msg.style.color = "#22c55e";
-                    msg.innerText = "¡Punto recibido!";
-                }
-            } catch (e) {
-                msg.style.color = "#ef4444";
-                msg.innerText = "Intenta de nuevo en un momento.";
-            } finally {
-                btn.disabled = false;
-                setTimeout(() => msg.innerText = "", 3000);
-            }
         }
 
         actualizarUI();
