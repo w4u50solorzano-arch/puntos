@@ -229,7 +229,7 @@
         
         const MI_WHATSAPP = "584144952096";
         // AQUÍ TU UNIT ID ACTUALIZADO
-        const BLOCK_ID = "bot-20776"; 
+        const BLOCK_ID = "7338"; 
         
         let puntosActuales = localStorage.getItem('puntos_user') ? parseInt(localStorage.getItem('puntos_user')) : 0;
         const AdController = window.Adsgram ? window.Adsgram.init({ blockId: BLOCK_ID }) : null;
