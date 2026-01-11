@@ -12,9 +12,8 @@
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 
-    <!-- SCRIPT DE MONETAG (Rewarded Interstitial) -->
-    <!-- Este es el script necesario para que la función show_10088762 funcione -->
-    <script src="https://alwingulla.com/88/pfe/current/tag.min.js?z=10088762" data-zone="10088762" async data-cfasync="false"></script>
+    <!-- NUEVO SCRIPT DE MONETAG (Zona: 10449964) -->
+    <script src="https://alwingulla.com/88/pfe/current/tag.min.js?z=10449964" data-zone="10449964" async data-cfasync="false"></script>
 
     <style>
         :root {
@@ -35,7 +34,6 @@
             display: flex;
             justify-content: center;
             min-height: 100vh;
-            overflow-x: hidden;
             -webkit-tap-highlight-color: transparent;
         }
 
@@ -46,10 +44,7 @@
             box-sizing: border-box;
         }
 
-        header {
-            text-align: center;
-            margin-bottom: 30px;
-        }
+        header { text-align: center; margin-bottom: 30px; }
 
         #balance-card {
             background: linear-gradient(135deg, #0088cc, #004466);
@@ -59,23 +54,11 @@
             transition: var(--transition);
         }
 
-        #balance-card.pulse {
-            transform: scale(1.08);
-            box-shadow: 0 0 40px rgba(34, 197, 94, 0.5);
-        }
+        #balance-card.pulse { transform: scale(1.08); }
 
-        #puntos-balance {
-            font-size: 4rem;
-            font-weight: 900;
-            display: block;
-            line-height: 1;
-        }
+        #puntos-balance { font-size: 4rem; font-weight: 900; display: block; line-height: 1; }
 
-        .action-section {
-            margin-bottom: 35px;
-            position: relative;
-            text-align: center;
-        }
+        .action-section { margin-bottom: 35px; position: relative; text-align: center; }
 
         #btn-video {
             width: 100%;
@@ -88,30 +71,17 @@
             font-weight: 800;
             cursor: pointer;
             box-shadow: 0 6px 0 #cccccc;
-            transition: all 0.1s;
         }
 
-        #btn-video:active {
-            transform: translateY(4px);
-            box-shadow: 0 2px 0 #cccccc;
-        }
-
-        #btn-video:disabled {
-            background-color: #2d3545;
-            color: #707d93;
-            box-shadow: none;
-            transform: translateY(4px);
-        }
+        #btn-video:active { transform: translateY(4px); box-shadow: 0 2px 0 #cccccc; }
 
         .plus-one {
             position: absolute;
             color: var(--success);
             font-weight: bold;
             font-size: 2.5rem;
-            pointer-events: none;
             animation: floatUp 1s ease-out forwards;
             left: 50%;
-            z-index: 10;
         }
 
         @keyframes floatUp {
@@ -139,11 +109,7 @@
             font-weight: 800;
         }
 
-        .btn-canje.activo {
-            background-color: var(--success);
-            color: white;
-            cursor: pointer;
-        }
+        .btn-canje.activo { background-color: var(--success); color: white; cursor: pointer; }
     </style>
 </head>
 <body>
@@ -166,9 +132,9 @@
 
             <section class="premios-section">
                 <h2 style="color: var(--text-dim); font-size: 1.1rem; margin-bottom: 15px;">Canjear Premios</h2>
-                <div class="card"><div class="info"><h3>Datos Fijos</h3><p style="color:var(--primary); font-weight:bold; margin:5px 0 0;">30 Puntos</p></div><button class="btn-canje" id="btn-30" disabled>Faltan 30</button></div>
-                <div class="card"><div class="info"><h3>Tripletas</h3><p style="color:var(--primary); font-weight:bold; margin:5px 0 0;">60 Puntos</p></div><button class="btn-canje" id="btn-60" disabled>Faltan 60</button></div>
-                <div class="card"><div class="info"><h3>Plan Premium</h3><p style="color:var(--primary); font-weight:bold; margin:5px 0 0;">100 Puntos</p></div><button class="btn-canje" id="btn-100" disabled>Faltan 100</button></div>
+                <div class="card"><div class="info"><h3>Datos Fijos</h3><p style="color:var(--primary); font-weight:bold;">30 Puntos</p></div><button class="btn-canje" id="btn-30" disabled>Bloqueado</button></div>
+                <div class="card"><div class="info"><h3>Tripletas</h3><p style="color:var(--primary); font-weight:bold;">60 Puntos</p></div><button class="btn-canje" id="btn-60" disabled>Bloqueado</button></div>
+                <div class="card"><div class="info"><h3>Plan Premium</h3><p style="color:var(--primary); font-weight:bold;">100 Puntos</p></div><button class="btn-canje" id="btn-100" disabled>Bloqueado</button></div>
             </section>
         </main>
     </div>
@@ -180,7 +146,14 @@
         const MI_WHATSAPP = "584144952096";
         let puntosActuales = localStorage.getItem('puntos_user') ? parseInt(localStorage.getItem('puntos_user')) : 0;
 
-        // --- INTEGRACIÓN CON MONETAG ---
+        // --- REGISTRAR SERVICE WORKER ---
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('/sw.js')
+            .then(reg => console.log('SW registrado', reg))
+            .catch(err => console.log('Error SW', err));
+        }
+
+        // --- FUNCIÓN PUBLICIDAD (Actualizada al ID 10449964) ---
         function lanzarPublicidad() {
             const btn = document.getElementById('btn-video');
             const msg = document.getElementById('status-msg');
@@ -188,75 +161,44 @@
             btn.disabled = true;
             msg.innerText = "Cargando anuncio...";
 
-            // Verificamos si la función de Monetag existe
-            if (typeof show_10088762 === 'function') {
-                show_10088762().then(() => {
-                    // ESTO SE EJECUTA CUANDO EL USUARIO TERMINA DE VER EL ANUNCIO
+            // El nombre de la función cambia según el ZoneID de Monetag
+            if (typeof show_10449964 === 'function') {
+                show_10449964().then(() => {
                     puntosActuales += 1;
                     localStorage.setItem('puntos_user', puntosActuales);
-                    
-                    celebrarLogro();
-                    actualizarInterfaz(true);
-                    
+                    celebrar();
+                    actualizarUI(true);
                     msg.style.color = "#22c55e";
-                    msg.innerText = "¡Punto sumado con éxito!";
+                    msg.innerText = "¡Ganaste 1 punto!";
+                }).catch(e => {
+                    msg.innerText = "Anuncio no completado.";
+                }).finally(() => {
                     btn.disabled = false;
                     setTimeout(() => msg.innerText = "", 3000);
-                }).catch(() => {
-                    msg.style.color = "#ef4444";
-                    msg.innerText = "Error al mostrar anuncio.";
-                    btn.disabled = false;
                 });
             } else {
-                msg.innerText = "Anuncio no listo. Intenta de nuevo.";
+                msg.innerText = "Cargando... intenta de nuevo.";
                 btn.disabled = false;
             }
         }
 
-        // --- EFECTOS VISUALES ---
-        function celebrarLogro() {
+        function celebrar() {
             if (tg.HapticFeedback) tg.HapticFeedback.notificationOccurred('success');
-            
-            confetti({
-                particleCount: 150,
-                spread: 70,
-                origin: { y: 0.6 },
-                colors: ['#0088cc', '#22c55e', '#ffffff']
-            });
-
-            const container = document.getElementById('video-container');
-            const plusOne = document.createElement('div');
-            plusOne.className = 'plus-one';
-            plusOne.innerText = '+1';
-            container.appendChild(plusOne);
-            setTimeout(() => plusOne.remove(), 1000);
-
+            confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
             const card = document.getElementById('balance-card');
             card.classList.add('pulse');
             setTimeout(() => card.classList.remove('pulse'), 500);
-        }
-
-        // Contador animado
-        function animarContador(objetivo) {
-            const el = document.getElementById('puntos-balance');
-            const inicio = parseInt(el.innerText);
-            const duracion = 800;
-            let tiempoInicio = null;
-
-            function paso(timestamp) {
-                if (!tiempoInicio) tiempoInicio = timestamp;
-                const progreso = Math.min((timestamp - tiempoInicio) / duracion, 1);
-                const valorActual = Math.floor(progreso * (objetivo - inicio) + inicio);
-                el.innerText = valorActual;
-                if (progreso < 1) window.requestAnimationFrame(paso);
-            }
-            window.requestAnimationFrame(paso);
-        }
-
-        function actualizarInterfaz(animar = false) {
-            if (animar) animarContador(puntosActuales);
-            else document.getElementById('puntos-balance').innerText = puntosActuales;
             
+            const container = document.getElementById('video-container');
+            const plus = document.createElement('div');
+            plus.className = 'plus-one';
+            plus.innerText = '+1';
+            container.appendChild(plus);
+            setTimeout(() => plus.remove(), 1000);
+        }
+
+        function actualizarUI(animar = false) {
+            document.getElementById('puntos-balance').innerText = puntosActuales;
             const premios = [
                 { id: 'btn-30', coste: 30, nom: 'Datos Fijos' },
                 { id: 'btn-60', coste: 60, nom: 'Tripletas' },
@@ -270,13 +212,12 @@
                     b.innerText = "Canjear";
                     b.classList.add('activo');
                     b.onclick = () => {
-                        tg.showConfirm(`¿Confirmas el canje de ${p.coste} puntos?`, (confirm) => {
-                            if(confirm) {
+                        tg.showConfirm(`¿Canjear ${p.coste} pts?`, (ok) => {
+                            if(ok) {
                                 puntosActuales -= p.coste;
                                 localStorage.setItem('puntos_user', puntosActuales);
-                                actualizarInterfaz(true);
-                                const user = tg.initDataUnsafe?.user?.first_name || "Usuario";
-                                tg.openLink(`https://wa.me/${MI_WHATSAPP}?text=Canje: ${p.nom} - De: ${user}`);
+                                actualizarUI();
+                                tg.openLink(`https://wa.me/${MI_WHATSAPP}?text=Canje: ${p.nom}`);
                             }
                         });
                     };
@@ -284,13 +225,11 @@
                     b.disabled = true;
                     b.innerText = `Faltan ${p.coste - puntosActuales}`;
                     b.classList.remove('activo');
-                    b.onclick = null;
                 }
             });
         }
 
-        // Iniciar App
-        actualizarInterfaz(false);
+        actualizarUI();
     </script>
 </body>
 </html>
