@@ -187,7 +187,7 @@
         const BLOCK_ID = "4280"; // Reemplaza con tu ID real de Adsgram
         
         let puntos = localStorage.getItem('puntos_user') ? parseInt(localStorage.getItem('puntos_user')) : 0;
-        const AdController = window.Adsgram ? window.Adsgram.init({ blockId: bot-20776 }) : null;
+        const AdController = window.Adsgram ? window.Adsgram.init({ blockId:20776 }) : null;
 
         // 2. ACTUALIZAR INTERFAZ
         function actualizarUI() {
