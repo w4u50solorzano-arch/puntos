@@ -2,27 +2,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    
     <!-- Verificación de Monetag -->
     <meta name="monetag" content="db8f471cb82be6057fc6b2d199208382">
+    
     <title>Puntos Rewards Bot</title>
     
     <!-- SDK de Telegram y Confetti -->
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 
-    <!-- SCRIPT DE MONETAG (REEMPLAZA ESTO) -->
-    <!-- Pega aquí el script que te da Monetag para tu Zone ID -->
-    
-
-// Rewarded interstitial
-
-show_10088762().then(() => {
-    // You need to add your user reward function here, which will be executed after the user watches the ad.
-    // For more details, please refer to the detailed instructions.
-    alert('You have seen an ad!');
-})
-
-        
+    <!-- SCRIPT DE MONETAG (Rewarded Interstitial) -->
+    <!-- Este es el script necesario para que la función show_10088762 funcione -->
+    <script src="https://alwingulla.com/88/pfe/current/tag.min.js?z=10088762" data-zone="10088762" async data-cfasync="false"></script>
 
     <style>
         :root {
@@ -68,7 +60,7 @@ show_10088762().then(() => {
         }
 
         #balance-card.pulse {
-            transform: scale(1.05);
+            transform: scale(1.08);
             box-shadow: 0 0 40px rgba(34, 197, 94, 0.5);
         }
 
@@ -76,15 +68,7 @@ show_10088762().then(() => {
             font-size: 4rem;
             font-weight: 900;
             display: block;
-        }
-
-        #balance-card p {
-            margin: 10px 0 0;
-            font-size: 0.85rem;
-            letter-spacing: 3px;
-            font-weight: bold;
-            text-transform: uppercase;
-            opacity: 0.8;
+            line-height: 1;
         }
 
         .action-section {
@@ -110,6 +94,13 @@ show_10088762().then(() => {
         #btn-video:active {
             transform: translateY(4px);
             box-shadow: 0 2px 0 #cccccc;
+        }
+
+        #btn-video:disabled {
+            background-color: #2d3545;
+            color: #707d93;
+            box-shadow: none;
+            transform: translateY(4px);
         }
 
         .plus-one {
@@ -161,23 +152,23 @@ show_10088762().then(() => {
         <header>
             <div id="balance-card">
                 <span id="puntos-balance">0</span>
-                <p>Puntos Acumulados</p>
+                <p style="margin:10px 0 0; letter-spacing:2px; font-weight:bold; opacity:0.8;">MIS PUNTOS</p>
             </div>
         </header>
 
         <main>
             <section class="action-section" id="video-container">
-                <button id="btn-video" onclick="mostrarAnuncioMonetag()">
-                    <span>📺</span> VER PUBLICIDAD (+1)
+                <button id="btn-video" onclick="lanzarPublicidad()">
+                    📺 VER ANUNCIO (+1)
                 </button>
-                <p id="status-msg"></p>
+                <p id="status-msg" style="margin-top:15px; height:20px;"></p>
             </section>
 
             <section class="premios-section">
                 <h2 style="color: var(--text-dim); font-size: 1.1rem; margin-bottom: 15px;">Canjear Premios</h2>
-                <div class="card"><div class="info"><h3>Datos Fijos</h3><p style="color:var(--primary)">30 Puntos</p></div><button class="btn-canje" id="btn-30" disabled>Bloqueado</button></div>
-                <div class="card"><div class="info"><h3>Tripletas</h3><p style="color:var(--primary)">60 Puntos</p></div><button class="btn-canje" id="btn-60" disabled>Bloqueado</button></div>
-                <div class="card"><div class="info"><h3>Plan Premium</h3><p style="color:var(--primary)">100 Puntos</p></div><button class="btn-canje" id="btn-100" disabled>Bloqueado</button></div>
+                <div class="card"><div class="info"><h3>Datos Fijos</h3><p style="color:var(--primary); font-weight:bold; margin:5px 0 0;">30 Puntos</p></div><button class="btn-canje" id="btn-30" disabled>Faltan 30</button></div>
+                <div class="card"><div class="info"><h3>Tripletas</h3><p style="color:var(--primary); font-weight:bold; margin:5px 0 0;">60 Puntos</p></div><button class="btn-canje" id="btn-60" disabled>Faltan 60</button></div>
+                <div class="card"><div class="info"><h3>Plan Premium</h3><p style="color:var(--primary); font-weight:bold; margin:5px 0 0;">100 Puntos</p></div><button class="btn-canje" id="btn-100" disabled>Faltan 100</button></div>
             </section>
         </main>
     </div>
@@ -189,101 +180,37 @@ show_10088762().then(() => {
         const MI_WHATSAPP = "584144952096";
         let puntosActuales = localStorage.getItem('puntos_user') ? parseInt(localStorage.getItem('puntos_user')) : 0;
 
-        // --- FUNCIÓN PARA MONETAG ---
-        function mostrarAnuncioMonetag() {
+        // --- INTEGRACIÓN CON MONETAG ---
+        function lanzarPublicidad() {
+            const btn = document.getElementById('btn-video');
             const msg = document.getElementById('status-msg');
-            msg.innerText = "Abriendo publicidad...";
-
-            // 1. Llamamos al anuncio de Monetag
-            // Si usas un Rewarded Interstitial de Monetag, el script suele activarse solo o mediante una función.
-            // Si usas un "Direct Link", usa la línea de abajo:
-            // window.open("TU_DIRECT_LINK_AQUI", "_blank");
-
-            // Simulación de éxito de Monetag (Ya que Monetag no siempre devuelve si se vio el video)
-            // Agregamos el punto inmediatamente o tras un pequeño delay
-            setTimeout(() => {
-                sumarPunto();
-                msg.innerText = "¡Punto sumado!";
-                setTimeout(() => msg.innerText = "", 2000);
-            }, 2000); 
-        }
-
-        function sumarPunto() {
-            puntosActuales += 1;
-            localStorage.setItem('puntos_user', puntosActuales);
             
-            // Animaciones
-            celebrarEfecto();
-            actualizarUI(true);
-        }
+            btn.disabled = true;
+            msg.innerText = "Cargando anuncio...";
 
-        function celebrarEfecto() {
-            if (tg.HapticFeedback) tg.HapticFeedback.notificationOccurred('success');
-            confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
-            
-            const container = document.getElementById('video-container');
-            const plusOne = document.createElement('div');
-            plusOne.className = 'plus-one';
-            plusOne.innerText = '+1';
-            container.appendChild(plusOne);
-            setTimeout(() => plusOne.remove(), 1000);
-
-            const card = document.getElementById('balance-card');
-            card.classList.add('pulse');
-            setTimeout(() => card.classList.remove('pulse'), 500);
-        }
-
-        function animarContador(objetivo) {
-            const el = document.getElementById('puntos-balance');
-            const inicio = parseInt(el.innerText);
-            const duracion = 800;
-            let tiempoInicio = null;
-
-            function paso(timestamp) {
-                if (!tiempoInicio) tiempoInicio = timestamp;
-                const progreso = Math.min((timestamp - tiempoInicio) / duracion, 1);
-                const valorActual = Math.floor(progreso * (objetivo - inicio) + inicio);
-                el.innerText = valorActual;
-                if (progreso < 1) window.requestAnimationFrame(paso);
+            // Verificamos si la función de Monetag existe
+            if (typeof show_10088762 === 'function') {
+                show_10088762().then(() => {
+                    // ESTO SE EJECUTA CUANDO EL USUARIO TERMINA DE VER EL ANUNCIO
+                    puntosActuales += 1;
+                    localStorage.setItem('puntos_user', puntosActuales);
+                    
+                    celebrarLogro();
+                    actualizarInterfaz(true);
+                    
+                    msg.style.color = "#22c55e";
+                    msg.innerText = "¡Punto sumado con éxito!";
+                    btn.disabled = false;
+                    setTimeout(() => msg.innerText = "", 3000);
+                }).catch(() => {
+                    msg.style.color = "#ef4444";
+                    msg.innerText = "Error al mostrar anuncio.";
+                    btn.disabled = false;
+                });
+            } else {
+                msg.innerText = "Anuncio no listo. Intenta de nuevo.";
+                btn.disabled = false;
             }
-            window.requestAnimationFrame(paso);
         }
 
-        function actualizarUI(animar = false) {
-            if (animar) animarContador(puntosActuales);
-            else document.getElementById('puntos-balance').innerText = puntosActuales;
-            
-            const premios = [
-                { id: 'btn-30', coste: 30, nom: 'Datos Fijos' },
-                { id: 'btn-60', coste: 60, nom: 'Tripletas' },
-                { id: 'btn-100', coste: 100, nom: 'Plan Premium' }
-            ];
-
-            premios.forEach(p => {
-                const b = document.getElementById(p.id);
-                if (puntosActuales >= p.coste) {
-                    b.disabled = false;
-                    b.innerText = "Canjear";
-                    b.classList.add('activo');
-                    b.onclick = () => {
-                        tg.showConfirm(`¿Canjear ${p.coste} pts?`, (confirm) => {
-                            if(confirm) {
-                                puntosActuales -= p.coste;
-                                localStorage.setItem('puntos_user', puntosActuales);
-                                actualizarUI(true);
-                                tg.openLink(`https://wa.me/${MI_WHATSAPP}?text=Canje: ${p.nom}`);
-                            }
-                        });
-                    };
-                } else {
-                    b.disabled = true;
-                    b.innerText = `Faltan ${p.coste - puntosActuales}`;
-                    b.classList.remove('activo');
-                }
-            });
-        }
-
-        actualizarUI();
-    </script>
-</body>
-</html>
+        // --- E
