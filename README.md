@@ -213,4 +213,84 @@
             }
         }
 
-        // --- E
+        // --- EFECTOS VISUALES ---
+        function celebrarLogro() {
+            if (tg.HapticFeedback) tg.HapticFeedback.notificationOccurred('success');
+            
+            confetti({
+                particleCount: 150,
+                spread: 70,
+                origin: { y: 0.6 },
+                colors: ['#0088cc', '#22c55e', '#ffffff']
+            });
+
+            const container = document.getElementById('video-container');
+            const plusOne = document.createElement('div');
+            plusOne.className = 'plus-one';
+            plusOne.innerText = '+1';
+            container.appendChild(plusOne);
+            setTimeout(() => plusOne.remove(), 1000);
+
+            const card = document.getElementById('balance-card');
+            card.classList.add('pulse');
+            setTimeout(() => card.classList.remove('pulse'), 500);
+        }
+
+        // Contador animado
+        function animarContador(objetivo) {
+            const el = document.getElementById('puntos-balance');
+            const inicio = parseInt(el.innerText);
+            const duracion = 800;
+            let tiempoInicio = null;
+
+            function paso(timestamp) {
+                if (!tiempoInicio) tiempoInicio = timestamp;
+                const progreso = Math.min((timestamp - tiempoInicio) / duracion, 1);
+                const valorActual = Math.floor(progreso * (objetivo - inicio) + inicio);
+                el.innerText = valorActual;
+                if (progreso < 1) window.requestAnimationFrame(paso);
+            }
+            window.requestAnimationFrame(paso);
+        }
+
+        function actualizarInterfaz(animar = false) {
+            if (animar) animarContador(puntosActuales);
+            else document.getElementById('puntos-balance').innerText = puntosActuales;
+            
+            const premios = [
+                { id: 'btn-30', coste: 30, nom: 'Datos Fijos' },
+                { id: 'btn-60', coste: 60, nom: 'Tripletas' },
+                { id: 'btn-100', coste: 100, nom: 'Plan Premium' }
+            ];
+
+            premios.forEach(p => {
+                const b = document.getElementById(p.id);
+                if (puntosActuales >= p.coste) {
+                    b.disabled = false;
+                    b.innerText = "Canjear";
+                    b.classList.add('activo');
+                    b.onclick = () => {
+                        tg.showConfirm(`¿Confirmas el canje de ${p.coste} puntos?`, (confirm) => {
+                            if(confirm) {
+                                puntosActuales -= p.coste;
+                                localStorage.setItem('puntos_user', puntosActuales);
+                                actualizarInterfaz(true);
+                                const user = tg.initDataUnsafe?.user?.first_name || "Usuario";
+                                tg.openLink(`https://wa.me/${MI_WHATSAPP}?text=Canje: ${p.nom} - De: ${user}`);
+                            }
+                        });
+                    };
+                } else {
+                    b.disabled = true;
+                    b.innerText = `Faltan ${p.coste - puntosActuales}`;
+                    b.classList.remove('activo');
+                    b.onclick = null;
+                }
+            });
+        }
+
+        // Iniciar App
+        actualizarInterfaz(false);
+    </script>
+</body>
+</html>
