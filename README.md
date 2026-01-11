@@ -12,7 +12,17 @@
 
     <!-- SCRIPT DE MONETAG (REEMPLAZA ESTO) -->
     <!-- Pega aquí el script que te da Monetag para tu Zone ID -->
-    <script src="https://alwingulla.com/88/pfe/current/tag.min.js?z=XXXXXXX" data-zone="XXXXXXX" async data-cfasync="false"></script>
+    
+
+// Rewarded interstitial
+
+show_10088762().then(() => {
+    // You need to add your user reward function here, which will be executed after the user watches the ad.
+    // For more details, please refer to the detailed instructions.
+    alert('You have seen an ad!');
+})
+
+        
 
     <style>
         :root {
